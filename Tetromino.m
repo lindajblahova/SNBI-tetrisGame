@@ -85,6 +85,38 @@ classdef Tetromino
             end
         end
 
+        function [obj, moved] = moveWithinMatrix(obj, direction, moved)
+            switch direction
+                case "left"
+                    leftVector = obj.getLeftPosition();
+                    if (leftVector(2) > 1)
+                        newMatrix = [
+                            obj.matrix(:,2) obj.matrix(:,3) obj.matrix(:,4) obj.matrix(:,1) 
+                        ];
+                        obj.matrix = newMatrix;
+                        moved = true;
+                    end
+                case "right"
+                    rightVector = obj.getRightPosition();
+                    if (rightVector(2) < 4)
+                        newMatrix = [
+                            obj.matrix(:,4) obj.matrix(:,1) obj.matrix(:,2) obj.matrix(:,3) 
+                        ];
+                        obj.matrix = newMatrix;
+                        moved.true;
+                    end
+                case "down"
+                    downVector = obj.getDownPosition();
+                    if (downVector(1) < 4)
+                        newMatrix = [
+                            obj.matrix(4,:) obj.matrix(1,:) obj.matrix(2,:) obj.matrix(3,:) 
+                        ];
+                        obj.matrix = newMatrix;
+                        moved = true;
+                    end
+                otherwise
+            end
+        end
 
     end
 end

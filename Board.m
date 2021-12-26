@@ -14,34 +14,65 @@ classdef Board
         function obj = Board()
             obj.board = zeros(20,10);
             obj.generator = Generator();
+            obj.fallingTetromino = Tetromino();
+            obj.positionLeft = 0;
+            obj.positionUp = 0;
         end
 
-        function obj = addTetrominoToBoard(obj)
-            obj.fallingTetromino = obj.generator.generateTetromino();
+        function obj = addTetrominoToBoard(obj, tetromino, rowIndex, colIndex)
+            if (obj.positionLeft ~= 0 && obj.positionUp ~= 0)
+                obj.removeTetrominoFromBoard();
+            end
+            
+            obj.fallingTetromino = tetromino;
+            %upTetrominoBorder = obj.fallingTetromino.getUpPosition();
+            %startingRow = upTetrominoBorder(1);
 
-            upTetrominoBorder = obj.fallingTetromino.getUpPosition();
-            startingRow = upTetrominoBorder(1);
-            colInMatrix = 3;
-
-            for row = 1:size(obj.fallingTetromino.matrix) - startingRow + 1
-                for col = 1:size(obj.fallingTetromino.matrix)
-                    obj.board(row,colInMatrix+col) = obj.fallingTetromino.matrix(startingRow,col);
+            for row = 1:size(obj.fallingTetromino.matrix) 
+                for col = 1:size(obj.fallingTetromino.matrix) 
+                    obj.board(rowIndex + row - 1,colIndex + col - 1) = obj.fallingTetromino.matrix(row,col);
                 end
-                startingRow = startingRow + 1;
+            end
+            obj.positionLeft = colIndex;
+            obj.positionUp = rowIndex; 
+        end
+
+        function obj = removeTetrominoFromBoard(obj)
+            for row = 1:size(obj.fallingTetromino.matrix) 
+                for col = 1:size(obj.fallingTetromino.matrix) 
+                    obj.board(obj.positionUp + row - 1,obj.positionLeft + col - 1) = 0;
+                end
             end
         end
 
-        function obj = moveTetrominoLeft(obj)
-            %BOARD Construct an instance of this class
-            %   Detailed explanation goes here
-            obj.board = zeros(20,10);
+        function obj = moveTetromino(obj, direction)
+            obj = obj.removeTetrominoFromBoard();
+            moved = false;
+
+            if (direction == "left")
+                if (obj.positionLeft > 1)
+                     obj.positionLeft = obj.positionLeft - 1;
+                elseif (obj.positionLeft == 1)
+                    [obj.fallingTetromino, moved] = obj.fallingTetromino.moveWithinMatrix(direction, moved);
+                end
+            elseif (direction == "right")
+                if (obj.positionLeft+size(obj.fallingTetromino.matrix) < 10)
+                     obj.positionLeft = obj.positionLeft + 1;
+                elseif (obj.positionLeft+size(obj.fallingTetromino.matrix) == 10)
+                    [obj.fallingTetromino, moved] = obj.fallingTetromino.moveWithinMatrix(direction, moved);
+                end
+            elseif (direction == "down")
+                if (obj.positionUp+size(obj.fallingTetromino.matrix) < 20)
+                    obj.positionUp = obj.positionUp + 1;
+                elseif (obj.positionUp+size(obj.fallingTetromino.matrix) == 20)
+                    [obj.fallingTetromino, moved] = obj.fallingTetromino.moveWithinMatrix(direction, moved);
+                end
+                 
+            end
+
+            obj = obj.addTetrominoToBoard(obj.fallingTetromino, obj.positionUp, obj.positionLeft);
         end
-         
-        function obj = moveTetrominoRight(obj)
-            %BOARD Construct an instance of this class
-            %   Detailed explanation goes here
-            obj.board = zeros(20,10);
-        end
+
     end
 end
 
