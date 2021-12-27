@@ -5,10 +5,10 @@ classdef ShapeZ < Tetromino
     methods
         function obj = ShapeZ()
             obj@Tetromino();
-            obj.matrix(2,2) = 1;
-            obj.matrix(2,3) = 1;
-            obj.matrix(3,3) = 1;
-            obj.matrix(3,4) = 1;
+            obj.matrix(2,2) = 7;
+            obj.matrix(2,3) = 7;
+            obj.matrix(3,3) = 7;
+            obj.matrix(3,4) = 7;
         end
         
     end

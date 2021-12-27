@@ -5,11 +5,11 @@ classdef ShapeJ < Tetromino
     methods
         function obj = ShapeJ()
             obj@Tetromino();
-            obj.matrix(1,3) = 1;
-            obj.matrix(2,3) = 1;
-            obj.matrix(3,3) = 1;
-            obj.matrix(4,3) = 1;
-            obj.matrix(4,2) = 1;
+            obj.matrix(1,3) = 2;
+            obj.matrix(2,3) = 2;
+            obj.matrix(3,3) = 2;
+            obj.matrix(4,3) = 2;
+            obj.matrix(4,2) = 2;
         end
         
     end

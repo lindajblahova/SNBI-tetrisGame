@@ -21,12 +21,11 @@ classdef Tetromino
             obj.matrix = newMatrix;
         end
 
-        function leftBorderPosition = getLeftPosition(obj)
-                
+        function leftBorderPosition = getLeftPosition(obj)  
             leftBorderPosition = [0 0];
             for col = 1:size(obj.matrix)
                 for row = size(obj.matrix):-1:1
-                    if (obj.matrix(row,col) == 1)
+                    if (obj.matrix(row,col) ~= 0)
                         leftBorderPosition = [row col];
                         break;
                     end
@@ -38,11 +37,10 @@ classdef Tetromino
         end
 
         function rightBorderPosition = getRightPosition(obj)
-                
             rightBorderPosition = [0 0];
             for col = size(obj.matrix):-1:1
                 for row = size(obj.matrix):-1:1
-                    if (obj.matrix(row,col) == 1)
+                    if (obj.matrix(row,col) ~= 0)
                         rightBorderPosition = [row col];
                         break;
                     end
@@ -54,11 +52,10 @@ classdef Tetromino
         end
 
         function downBorderPosition = getDownPosition(obj)
-                
             downBorderPosition = [0 0];
             for row = size(obj.matrix):-1:1
                 for col = size(obj.matrix):-1:1
-                    if (obj.matrix(row,col) == 1)
+                    if (obj.matrix(row,col) ~= 0)
                         downBorderPosition = [row col];
                         break;
                     end
@@ -69,12 +66,23 @@ classdef Tetromino
             end
         end
 
-         function upBorderPosition = getUpPosition(obj)
-                
+        function downBlocks = getAllDownBlocks(obj, downBlocks)
+            for row = size(obj.matrix):-1:1
+                for col = size(obj.matrix):-1:1
+                    if (obj.matrix(row,col) ~= 0)
+                        if (row == 4 || ( row ~= 4 && obj.matrix(row+1,col) == 0))
+                        downBlocks = [downBlocks ; row col];
+                        end
+                    end
+                end
+            end
+        end
+
+         function upBorderPosition = getUpPosition(obj)  
             upBorderPosition = [0 0];
             for row = 1:size(obj.matrix)
                 for col = 1:size(obj.matrix)
-                    if (obj.matrix(row,col) == 1)
+                    if (obj.matrix(row,col) ~= 0)
                         upBorderPosition = [row col];
                         break;
                     end
@@ -85,7 +93,7 @@ classdef Tetromino
             end
         end
 
-        function [obj, moved] = moveWithinMatrix(obj, direction, moved)
+        function [obj, isDown] = moveWithinMatrix(obj, direction, isDown)
             switch direction
                 case "left"
                     leftVector = obj.getLeftPosition();
@@ -94,7 +102,6 @@ classdef Tetromino
                             obj.matrix(:,2) obj.matrix(:,3) obj.matrix(:,4) obj.matrix(:,1) 
                         ];
                         obj.matrix = newMatrix;
-                        moved = true;
                     end
                 case "right"
                     rightVector = obj.getRightPosition();
@@ -103,16 +110,22 @@ classdef Tetromino
                             obj.matrix(:,4) obj.matrix(:,1) obj.matrix(:,2) obj.matrix(:,3) 
                         ];
                         obj.matrix = newMatrix;
-                        moved.true;
                     end
                 case "down"
                     downVector = obj.getDownPosition();
+                    disp(downVector);
+                    disp(obj.matrix);
                     if (downVector(1) < 4)
                         newMatrix = [
-                            obj.matrix(4,:) obj.matrix(1,:) obj.matrix(2,:) obj.matrix(3,:) 
+                            obj.matrix(4,:) ;
+                            obj.matrix(1,:) ;
+                            obj.matrix(2,:) ;
+                            obj.matrix(3,:) 
                         ];
                         obj.matrix = newMatrix;
-                        moved = true;
+                        isDown = true;
+                    elseif (downVector(1) == 4)
+                        isDown = true;
                     end
                 otherwise
             end

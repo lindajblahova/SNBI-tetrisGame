@@ -5,11 +5,11 @@ classdef ShapeL < Tetromino
     methods
         function obj = ShapeL()
             obj@Tetromino();
-            obj.matrix(1,2) = 1;
-            obj.matrix(2,2) = 1;
-            obj.matrix(3,2) = 1;
-            obj.matrix(4,2) = 1;
-            obj.matrix(4,3) = 1;
+            obj.matrix(1,2) = 3;
+            obj.matrix(2,2) = 3;
+            obj.matrix(3,2) = 3;
+            obj.matrix(4,2) = 3;
+            obj.matrix(4,3) = 3;
         end
 
     end

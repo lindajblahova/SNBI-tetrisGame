@@ -5,10 +5,10 @@ classdef ShapeS < Tetromino
     methods
         function obj = ShapeS()
             obj@Tetromino();
-            obj.matrix(2,2) = 1;
-            obj.matrix(2,3) = 1;
-            obj.matrix(3,2) = 1;
-            obj.matrix(3,1) = 1;
+            obj.matrix(2,2) = 5;
+            obj.matrix(2,3) = 5;
+            obj.matrix(3,2) = 5;
+            obj.matrix(3,1) = 5;
         end
         
     end
