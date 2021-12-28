@@ -72,28 +72,73 @@ classdef Board
            end
         end
 
+        function canGoLeft = checkToMoveLeft(obj, canGoLeft) 
+            leftBlocks = [];
+            leftBlocks = obj.fallingTetromino.getAllLeftBlocks(leftBlocks);
+            if (obj.positionLeft >= 1)
+                for i = 1:size(leftBlocks)
+                    if (leftBlocks(i,2) == 1 && obj.positionLeft == 1)
+                         canGoLeft = false;
+                    break;
+                    end
+                    if (obj.boardMatrix(obj.positionUp + leftBlocks(i,1) - 1, obj.positionLeft + leftBlocks(i,2) - 2) ~= 0)
+                        canGoLeft = false;
+                    break;
+                    end
+                end
+            end     
+        end
+
+        function canGoRight = checkToMoveRight(obj, canGoRight) 
+            rightBlocks = [];
+            rightBlocks = obj.fallingTetromino.getAllRightBlocks(rightBlocks);
+            if (obj.positionLeft + size(obj.fallingTetromino.matrix) - 1 < 10)
+                for i = 1:size(rightBlocks)
+                    if (rightBlocks(i,2) == 4 && (obj.positionLeft + 4 - 1 == 10))
+                         canGoRight = false;
+                    break;
+                    end
+                    if (obj.boardMatrix(obj.positionUp + rightBlocks(i,1) - 1, obj.positionLeft + rightBlocks(i,2)) ~= 0)
+                        canGoRight = false;
+                    break;
+                    end
+                end
+           end
+        end
+
         function obj = moveTetromino(obj, direction)
             if (obj.positionLeft ~= 0 && obj.positionUp ~= 0)
                 obj = obj.removeTetrominoFromBoard();
             end
             isDown = false;
             canGoDown = true;
+            canGoLeft = true;
+            canGoRight = true;
 
             if (direction == "left")
-                if (obj.positionLeft > 1)
-                     obj.positionLeft = obj.positionLeft - 1;
-                elseif (obj.positionLeft == 1)
-                    obj.fallingTetromino= obj.fallingTetromino.moveWithinMatrix(direction, isDown);
+
+                canGoLeft = obj.checkToMoveLeft(canGoLeft);
+
+                if (canGoLeft)
+                    if (obj.positionLeft > 1)
+                        obj.positionLeft = obj.positionLeft - 1;
+                    elseif (obj.positionLeft == 1)
+                        obj.fallingTetromino= obj.fallingTetromino.moveWithinMatrix(direction, isDown);
+                    end
                 end
-                canGoDown = obj.checkToMoveDown(canGoDown);
+
             elseif (direction == "right")
-                
-                if (obj.positionLeft+size(obj.fallingTetromino.matrix)-1 < 10)
-                     obj.positionLeft = obj.positionLeft + 1;
-                elseif (obj.positionLeft+size(obj.fallingTetromino.matrix)-1 == 10)
-                    obj.fallingTetromino = obj.fallingTetromino.moveWithinMatrix(direction, isDown);
+
+                canGoRight = obj.checkToMoveRight(canGoRight);
+
+                if (canGoRight)
+                    if (obj.positionLeft+size(obj.fallingTetromino.matrix)-1 < 10)
+                        obj.positionLeft = obj.positionLeft + 1;
+                    elseif (obj.positionLeft+size(obj.fallingTetromino.matrix)-1 == 10)
+                        obj.fallingTetromino = obj.fallingTetromino.moveWithinMatrix(direction, isDown);
+                    end
                 end
-                canGoDown = obj.checkToMoveDown(canGoDown);
+                
             elseif (direction == "down")
                
                 canGoDown = obj.checkToMoveDown(canGoDown);

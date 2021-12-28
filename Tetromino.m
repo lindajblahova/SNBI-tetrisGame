@@ -78,6 +78,30 @@ classdef Tetromino
             end
         end
 
+        function leftBlocks = getAllLeftBlocks(obj, leftBlocks)
+            for row = size(obj.matrix):-1:1
+                for col = 1:size(obj.matrix)
+                    if (obj.matrix(row,col) ~= 0)
+                        if (col == 1 || (col ~= 1 && obj.matrix(row,col - 1) == 0))
+                        leftBlocks = [leftBlocks ; row col];
+                        end
+                    end
+                end
+            end
+        end
+
+        function rightBlocks = getAllRightBlocks(obj, rightBlocks)
+            for row = size(obj.matrix):-1:1
+                for col = size(obj.matrix):-1:1
+                    if (obj.matrix(row,col) ~= 0)
+                        if (col == 4 || (col ~= 4 && obj.matrix(row,col + 1) == 0))
+                        rightBlocks = [rightBlocks ; row col];
+                        end
+                    end
+                end
+            end
+        end
+
          function upBorderPosition = getUpPosition(obj)  
             upBorderPosition = [0 0];
             for row = 1:size(obj.matrix)

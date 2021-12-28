@@ -11,13 +11,12 @@ classdef Game
             obj.board = Board();
         end
         
-        function obj = moveOnKeyPress(obj)
-            k = waitforbuttonpress;
+        function obj = moveOnKeyPress(obj, value)
+
             % 28 leftarrow
             % 29 rightarrow
             % 30 uparrow
             % 31 downarrow
-            value = double(get(gcf,'CurrentCharacter'));
 
             switch value
                 case 28
@@ -30,6 +29,10 @@ classdef Game
                     obj.board = obj.board.moveTetromino("down");
                 otherwise
             end
+        end
+
+        function obj = moveDown(obj)
+                    obj.board = obj.board.moveTetromino("down");
         end
     end
 end
