@@ -7,6 +7,8 @@ classdef Generator
         end
         
         function tetromino = generateTetromino(obj)
+            rng('shuffle');
+            
             switch randi(7,1)
                 case 1
                     tetromino = ShapeI();

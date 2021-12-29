@@ -4,6 +4,7 @@ classdef Tetromino
     
     properties
         matrix
+        value
     end
     
     methods

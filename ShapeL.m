@@ -10,6 +10,8 @@ classdef ShapeL < Tetromino
             obj.matrix(3,2) = 3;
             obj.matrix(4,2) = 3;
             obj.matrix(4,3) = 3;
+
+            obj.value = 10;
         end
 
     end

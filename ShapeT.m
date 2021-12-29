@@ -9,6 +9,8 @@ classdef ShapeT < Tetromino
             obj.matrix(2,3) = 6;
             obj.matrix(2,4) = 6;
             obj.matrix(3,3) = 6;
+
+            obj.value = 10;
         end
         
     end

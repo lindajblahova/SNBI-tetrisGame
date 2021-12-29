@@ -10,6 +10,8 @@ classdef ShapeJ < Tetromino
             obj.matrix(3,3) = 2;
             obj.matrix(4,3) = 2;
             obj.matrix(4,2) = 2;
+
+            obj.value = 10;
         end
         
     end

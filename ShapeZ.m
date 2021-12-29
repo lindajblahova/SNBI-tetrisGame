@@ -9,6 +9,8 @@ classdef ShapeZ < Tetromino
             obj.matrix(2,3) = 7;
             obj.matrix(3,3) = 7;
             obj.matrix(3,4) = 7;
+
+            obj.value = 15;
         end
         
     end

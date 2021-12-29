@@ -8,6 +8,7 @@ classdef Board
         generator
         positionLeft
         positionUp
+        score
     end
     
     methods
@@ -17,7 +18,8 @@ classdef Board
             obj.positionLeft = 0;
             obj.positionUp = 0;
             obj.fallingTetromino = obj.generator.generateTetromino();
-            obj = obj.addTetrominoToBoard(obj.fallingTetromino,1,3); 
+            obj = obj.addTetrominoToBoard(obj.fallingTetromino,1,3);
+            obj.score = 0;
         end
 
         function obj = addTetrominoToBoard(obj, tetromino, rowIndex, colIndex)
@@ -106,6 +108,24 @@ classdef Board
            end
         end
 
+        function obj = checkFullRows(obj)
+            countOfFullRows = 0;
+            newMatrix = obj.boardMatrix;
+            for row = 1:20
+                B = min(newMatrix(row,:));
+                if (B > 0)
+                    newMatrix(row,:) = [];
+                    countOfFullRows = countOfFullRows + 1;
+                end
+            end
+
+            obj.score = obj.score + (countOfFullRows*100);
+
+            emptyRows = zeros(countOfFullRows,10);
+            newMatrix = [emptyRows ; newMatrix];
+            obj.boardMatrix = newMatrix;
+        end
+
         function obj = moveTetromino(obj, direction)
             if (obj.positionLeft ~= 0 && obj.positionUp ~= 0)
                 obj = obj.removeTetrominoFromBoard();
@@ -165,8 +185,10 @@ classdef Board
                     obj = obj.addTetrominoToBoard(obj.fallingTetromino, obj.positionUp, obj.positionLeft);
                 end
                
+                obj = obj.checkFullRows();
                 obj.positionLeft = 0;
                 obj.positionUp = 0;
+                obj.score = obj.score + obj.fallingTetromino.value;
                 obj.fallingTetromino = obj.generator.generateTetromino();
                 obj = obj.addTetrominoToBoard(obj.fallingTetromino,1,3); 
             end
