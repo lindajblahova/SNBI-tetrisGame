@@ -39,18 +39,21 @@ classdef Game
                     obj.board = obj.board.moveTetromino("down");
         end
 
-        function obj = stopGame(obj)
-                    obj.play = false;
-        end
-
         function obj = playGame(obj)
             obj = obj.readHighScore();
             set(gcf,'Visible','on');
             spy(obj.board.boardMatrix, 'k');
             set(gcf,'currentch',char(1));
             value = 0;
-            while obj.play
-            
+            while obj.board.gameOver == false
+
+                obj = obj.moveDown();
+
+                if (obj.board.gameOver == true)
+
+                    break;
+                end
+               
                 value = double(get(gcf,'CurrentCharacter'));
                 
                 switch value
@@ -67,10 +70,10 @@ classdef Game
                         figure(1);
                     case 1
                     otherwise
-                        obj.play = false;
+                        break;
                 end
                 
-                spy(obj.board.boardMatrix, 'k');
+                spy(obj.board.boardMatrix==1,'k');
                 hold on
                 spy(obj.board.boardMatrix==1,'r');
                 spy(obj.board.boardMatrix==2,'g');
@@ -81,9 +84,8 @@ classdef Game
                 spy(obj.board.boardMatrix==7,'k');
                 xlabel(strcat('Skore: ', "" + obj.board.score + "." + obj.fileText));
                 hold off
+
                 
-                obj = obj.moveDown();
-            
                 set(gcf,'currentch',char(1));
                 
                 pause(0.5);

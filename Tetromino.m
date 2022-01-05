@@ -148,7 +148,12 @@ classdef Tetromino
                             obj.matrix(3,:) 
                         ];
                         obj.matrix = newMatrix;
-                        isDown = true;
+                        downVector = obj.getDownPosition();
+                        if (downVector(1) < 4)
+                            isDown = false;
+                        else
+                            isDown = true;
+                        end
                     elseif (downVector(1) == 4)
                         isDown = true;
                     end

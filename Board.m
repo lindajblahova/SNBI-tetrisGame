@@ -9,6 +9,7 @@ classdef Board
         positionLeft
         positionUp
         score
+        gameOver
     end
     
     methods
@@ -18,18 +19,31 @@ classdef Board
             obj.positionLeft = 0;
             obj.positionUp = 0;
             obj.fallingTetromino = obj.generator.generateTetromino();
-            obj = obj.addTetrominoToBoard(obj.fallingTetromino,1,3);
+            obj = obj.addTetrominoToBoard(obj.fallingTetromino,1,3,true);
             obj.score = 0;
+            obj.gameOver = false;
         end
 
-        function obj = addTetrominoToBoard(obj, tetromino, rowIndex, colIndex)
-            if (obj.positionLeft ~= 0 && obj.positionUp ~= 0)
-                obj.removeTetrominoFromBoard();
+        function canBePlaced = canTetrominoBePlaced(obj)
+            canBePlaced = true;
+            for row = 1:size(obj.fallingTetromino.matrix) 
+                for col = 1:size(obj.fallingTetromino.matrix) 
+                    if (obj.fallingTetromino.matrix(row,col) ~= 0 && obj.boardMatrix(obj.positionUp + row - 1,obj.positionLeft + col - 1) ~= 0)
+                        canBePlaced = false;
+                        break;
+                    end
+                end
+                if (canBePlaced == false)
+                    break;
+                end
             end
-            
+        end
+
+        function obj = addTetrominoToBoard(obj, tetromino, rowIndex, colIndex, newTetromino)
+
+            obj.positionLeft = colIndex;
+            obj.positionUp = rowIndex; 
             obj.fallingTetromino = tetromino;
-            %upTetrominoBorder = obj.fallingTetromino.getUpPosition();
-            %startingRow = upTetrominoBorder(1);
 
             for row = 1:size(obj.fallingTetromino.matrix) 
                 for col = 1:size(obj.fallingTetromino.matrix) 
@@ -38,8 +52,6 @@ classdef Board
                     end
                 end
             end
-            obj.positionLeft = colIndex;
-            obj.positionUp = rowIndex; 
         end
 
         function obj = removeTetrominoFromBoard(obj)
@@ -55,7 +67,7 @@ classdef Board
         function obj = rotateTetrominoInBoard(obj)  
             obj = obj.removeTetrominoFromBoard();
             obj.fallingTetromino = obj.fallingTetromino.rotateRight();
-            obj = obj.addTetrominoToBoard(obj.fallingTetromino, obj.positionUp, obj.positionLeft); 
+            obj = obj.addTetrominoToBoard(obj.fallingTetromino, obj.positionUp, obj.positionLeft,false); 
         end
 
         function canGoDown = checkToMoveDown(obj, canGoDown) 
@@ -110,26 +122,23 @@ classdef Board
 
         function obj = checkFullRows(obj)
             countOfFullRows = 0;
-            newMatrix = obj.boardMatrix;
+            newMatrix = [];
             for row = 1:20
-                B = min(newMatrix(row,:));
+                B = min(obj.boardMatrix(row,:));
                 if (B > 0)
-                    newMatrix(row,:) = [];
+                    newMatrix = [zeros(1,10) ; newMatrix];
                     countOfFullRows = countOfFullRows + 1;
+                else
+                     newMatrix = [newMatrix ; obj.boardMatrix(row,:)];
                 end
             end
 
             obj.score = obj.score + (countOfFullRows*100);
-
-            emptyRows = zeros(countOfFullRows,10);
-            newMatrix = [emptyRows ; newMatrix];
             obj.boardMatrix = newMatrix;
         end
 
         function obj = moveTetromino(obj, direction)
-            if (obj.positionLeft ~= 0 && obj.positionUp ~= 0)
-                obj = obj.removeTetrominoFromBoard();
-            end
+
             isDown = false;
             canGoDown = true;
             canGoLeft = true;
@@ -138,6 +147,9 @@ classdef Board
             if (direction == "left")
 
                 canGoLeft = obj.checkToMoveLeft(canGoLeft);
+                if (obj.positionLeft ~= 0 && obj.positionUp ~= 0 && canGoLeft)
+                    obj = obj.removeTetrominoFromBoard();
+                end
 
                 if (canGoLeft)
                     if (obj.positionLeft > 1)
@@ -150,6 +162,9 @@ classdef Board
             elseif (direction == "right")
 
                 canGoRight = obj.checkToMoveRight(canGoRight);
+                if (obj.positionLeft ~= 0 && obj.positionUp ~= 0 && canGoRight)
+                    obj = obj.removeTetrominoFromBoard();
+                end
 
                 if (canGoRight)
                     if (obj.positionLeft+size(obj.fallingTetromino.matrix)-1 < 10)
@@ -162,6 +177,9 @@ classdef Board
             elseif (direction == "down")
                
                 canGoDown = obj.checkToMoveDown(canGoDown);
+                if (obj.positionLeft ~= 0 && obj.positionUp ~= 0)
+                    obj = obj.removeTetrominoFromBoard();
+                end
 
                 if (canGoDown)
                     if (obj.positionUp+size(obj.fallingTetromino.matrix)-1 < 20)
@@ -175,14 +193,17 @@ classdef Board
             end
 
             if (canGoDown)
-                obj = obj.addTetrominoToBoard(obj.fallingTetromino, obj.positionUp, obj.positionLeft);
+                obj = obj.addTetrominoToBoard(obj.fallingTetromino, obj.positionUp, obj.positionLeft,false);
             end
 
             if ((isDown && obj.positionUp >= 17) || canGoDown == false)
                 if (canGoDown == false)
-                    obj = obj.addTetrominoToBoard(obj.fallingTetromino, obj.positionUp+1, obj.positionLeft);
+                    obj = obj.addTetrominoToBoard(obj.fallingTetromino, obj.positionUp+1, obj.positionLeft,true);
+                    if (obj.positionUp <= 2)
+                        obj.gameOver = true;
+                    end
                 else
-                    obj = obj.addTetrominoToBoard(obj.fallingTetromino, obj.positionUp, obj.positionLeft);
+                    obj = obj.addTetrominoToBoard(obj.fallingTetromino, obj.positionUp, obj.positionLeft,false);
                 end
                
                 obj = obj.checkFullRows();
@@ -190,7 +211,7 @@ classdef Board
                 obj.positionUp = 0;
                 obj.score = obj.score + obj.fallingTetromino.value;
                 obj.fallingTetromino = obj.generator.generateTetromino();
-                obj = obj.addTetrominoToBoard(obj.fallingTetromino,1,3); 
+                obj = obj.addTetrominoToBoard(obj.fallingTetromino,1,3,true); 
             end
         end
 
