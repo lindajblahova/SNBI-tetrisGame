@@ -42,7 +42,6 @@ classdef Game
         function obj = playGame(obj)
             obj = obj.readHighScore();
             set(gcf,'Visible','on');
-            spy(obj.board.boardMatrix, 'k');
             set(gcf,'currentch',char(1));
             value = 0;
             while obj.board.gameOver == false
@@ -50,7 +49,18 @@ classdef Game
                 obj = obj.moveDown();
 
                 if (obj.board.gameOver == true)
-
+                    spy(obj.board.boardMatrix,'k');
+                hold on
+                spy(obj.board.boardMatrix==1,'r');
+                spy(obj.board.boardMatrix==2,'g');
+                spy(obj.board.boardMatrix==3,'b');
+                spy(obj.board.boardMatrix==4,'c');
+                spy(obj.board.boardMatrix==5,'m');
+                spy(obj.board.boardMatrix==6,'y');
+                spy(obj.board.boardMatrix==7,'k');
+                xlabel(strcat('Skore: ', "" + obj.board.score + "." + obj.fileText));
+                hold off
+               
                     break;
                 end
                
@@ -73,7 +83,7 @@ classdef Game
                         break;
                 end
                 
-                spy(obj.board.boardMatrix==1,'k');
+                spy(obj.board.boardMatrix,'k');
                 hold on
                 spy(obj.board.boardMatrix==1,'r');
                 spy(obj.board.boardMatrix==2,'g');
@@ -84,6 +94,7 @@ classdef Game
                 spy(obj.board.boardMatrix==7,'k');
                 xlabel(strcat('Skore: ', "" + obj.board.score + "." + obj.fileText));
                 hold off
+                disp(obj.board.boardMatrix);
 
                 
                 set(gcf,'currentch',char(1));
